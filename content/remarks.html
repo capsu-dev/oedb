@@ -1,0 +1,41 @@
+<div id="remarks-carousel" class="carousel slide" data-bs-interval="false" aria-label="Final survey step">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <div class="mb-4">
+                <p class="text-uppercase text-secondary small fw-semibold mb-1">Final step</p>
+                <h1 class="h3 fw-bold mb-2">Any other feedback?</h1>
+                <p class="text-secondary mb-0">Your comments can help us improve our services.</p>
+            </div>
+            <form id="remarks-form">
+                <div class="mb-4">
+                    <label class="form-label fw-semibold" for="remarks">Remarks <span class="text-secondary fw-normal">(optional)</span></label>
+                    <textarea class="form-control" id="remarks" name="remarks" rows="5" maxlength="1000" placeholder="Share any additional comments or suggestions"></textarea>
+                    <div class="form-text">You can leave this blank if you have no additional comments.</div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center gap-3">
+                    <button class="btn btn-outline-secondary" id="remarks-back-to-sqd" type="button">
+                        <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Back
+                    </button>
+                    <button class="btn btn-primary btn-lg" type="submit">
+                        Submit survey <i class="bi bi-send ms-1" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="carousel-item">
+            <section class="text-center py-5" aria-labelledby="survey-thank-you-title" aria-live="polite">
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-white border border-success p-4 mb-4">
+                    <svg class="text-success" xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="currentColor" viewBox="0 0 16 16" role="img" aria-label="Survey complete">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.02L7.48 8.67 5.9 7.1a.75.75 0 1 0-1.06 1.06l2.12 2.12a.75.75 0 0 0 1.08-.02l4.01-4.23a.75.75 0 0 0-.02-1.06z"/>
+                    </svg>
+                </div>
+                <h2 class="display-6 fw-bold text-dark mb-3" id="survey-thank-you-title">Thank you!</h2>
+                <p class="lead text-secondary mb-2">You have reached the end of the survey.</p>
+                <p class="text-secondary mb-4">Thank you for taking the time to share your experience with Capiz State University.</p>
+                <button class="d-none btn btn-outline-secondary" id="remarks-back" type="button">
+                    <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Back to remarks
+                </button>
+            </section>
+        </div>
+    </div>
+</div>

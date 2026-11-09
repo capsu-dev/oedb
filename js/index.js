@@ -1,6 +1,120 @@
 var sectionChanger = document.querySelector('.section-changer');
 var startSurveyButton = document.querySelector('.start_survey');
 var ccLoadPending = false;
+var sqdLoadPending = false;
+var remarksLoadPending = false;
+var activeSection = null;
+var sectionHistory = [];
+var forwardSections = [];
+
+function animateSection(direction) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !sectionChanger.animate) {
+        return;
+    }
+
+    sectionChanger.animate(
+        [
+            { opacity: 0, transform: 'translateX(' + (direction === 'back' ? '-1.5rem' : '1.5rem') + ')' },
+            { opacity: 1, transform: 'translateX(0)' }
+        ],
+        { duration: 350, easing: 'ease-out' }
+    );
+}
+
+function captureControlValues() {
+    return Array.prototype.map.call(
+        sectionChanger.querySelectorAll('input, select, textarea'),
+        function (control) {
+            return {
+                value: control.value,
+                checked: 'checked' in control ? control.checked : undefined
+            };
+        }
+    );
+}
+
+function restoreControlValues(values) {
+    var controls = sectionChanger.querySelectorAll('input, select, textarea');
+    Array.prototype.forEach.call(controls, function (control, index) {
+        if (!values[index]) {
+            return;
+        }
+
+        control.value = values[index].value;
+        if (values[index].checked !== undefined) {
+            control.checked = values[index].checked;
+        }
+    });
+}
+
+function initializeSection(stage) {
+    if (stage === 'basicinfo') {
+        initializeBasicInfo();
+    } else if (stage === 'cc') {
+        initializeCC();
+    } else if (stage === 'sqd') {
+        initializeSQD();
+    } else if (stage === 'remarks') {
+        initializeRemarks();
+    } else {
+        console.error('Cannot initialize unknown survey section: ' + stage);
+    }
+}
+
+function showSection(html, stage, direction) {
+    if (activeSection !== null) {
+        var currentNextButton = sectionChanger.querySelector('#basic-info-next, #cc-next, #sqd-next');
+        if (currentNextButton) {
+            currentNextButton.disabled = false;
+        }
+
+        sectionHistory.push({
+            stage: activeSection,
+            html: sectionChanger.innerHTML,
+            values: captureControlValues()
+        });
+    }
+
+    var cachedSection = forwardSections.length > 0
+        ? forwardSections[forwardSections.length - 1]
+        : null;
+    if (cachedSection && cachedSection.stage === stage) {
+        forwardSections.pop();
+        html = cachedSection.html;
+    } else {
+        forwardSections = [];
+    }
+
+    sectionChanger.innerHTML = html;
+    activeSection = stage;
+    if (cachedSection && cachedSection.stage === stage) {
+        restoreControlValues(cachedSection.values);
+    }
+    initializeSection(stage);
+    animateSection(direction);
+}
+
+function navigateToPreviousSection() {
+    if (activeSection !== null) {
+        forwardSections.push({
+            stage: activeSection,
+            html: sectionChanger.innerHTML,
+            values: captureControlValues()
+        });
+    }
+
+    var previousSection = sectionHistory.pop();
+    if (!previousSection) {
+        forwardSections.pop();
+        return;
+    }
+
+    sectionChanger.innerHTML = previousSection.html;
+    activeSection = previousSection.stage;
+    restoreControlValues(previousSection.values);
+    initializeSection(previousSection.stage);
+    animateSection('back');
+}
 
 function showLoadError(message) {
     console.error(message);
@@ -43,8 +157,8 @@ function loadCCSection(onError) {
             return;
         }
 
-        sectionChanger.innerHTML = request.responseText;
-        initializeCC();
+        ccLoadPending = false;
+        showSection(request.responseText, 'cc', 'forward');
     };
     request.onerror = function () {
         ccLoadPending = false;
@@ -55,6 +169,80 @@ function loadCCSection(onError) {
     };
 
     request.open('GET', 'content/cc.html', true);
+    request.send();
+}
+
+function loadSQDSection(onError) {
+    if (sqdLoadPending) {
+        return;
+    }
+
+    sqdLoadPending = true;
+    var request = new XMLHttpRequest();
+
+    request.onreadystatechange = function () {
+        if (request.readyState !== XMLHttpRequest.DONE) {
+            return;
+        }
+
+        if (request.status !== 200) {
+            sqdLoadPending = false;
+            showLoadError('Unable to load sqd.html. HTTP status: ' + request.status);
+            if (onError) {
+                onError();
+            }
+            return;
+        }
+
+        sqdLoadPending = false;
+        showSection(request.responseText, 'sqd', 'forward');
+    };
+    request.onerror = function () {
+        sqdLoadPending = false;
+        showLoadError('A network error occurred while loading sqd.html.');
+        if (onError) {
+            onError();
+        }
+    };
+
+    request.open('GET', 'content/sqd.html', true);
+    request.send();
+}
+
+function loadRemarksSection(onError) {
+    if (remarksLoadPending) {
+        return;
+    }
+
+    remarksLoadPending = true;
+    var request = new XMLHttpRequest();
+
+    request.onreadystatechange = function () {
+        if (request.readyState !== XMLHttpRequest.DONE) {
+            return;
+        }
+
+        if (request.status !== 200) {
+            remarksLoadPending = false;
+            showLoadError('Unable to load remarks.html. HTTP status: ' + request.status);
+            if (onError) {
+                onError();
+            }
+            return;
+        }
+
+        remarksLoadPending = false;
+        showSection(request.responseText, 'remarks', 'forward');
+    };
+    request.onerror = function () {
+        remarksLoadPending = false;
+        showLoadError('A network error occurred while loading remarks.html.');
+        if (onError) {
+            onError();
+        }
+    };
+
+    request.open('GET', 'content/remarks.html', true);
     request.send();
 }
 
@@ -69,14 +257,9 @@ function initializeBasicInfo() {
     var serviceOtherInput = document.getElementById('service-other');
     var serviceOtherModalElement = document.getElementById('service-other-modal');
     var serviceOtherSaveButton = document.getElementById('service-other-save');
-    var nextSectionModalElement = document.getElementById('basic-info-next-modal');
-    var continueButton = document.getElementById('basic-info-continue');
-    var continueButtonLabel = document.getElementById('basic-info-continue-label');
-    var nextSectionStatus = document.getElementById('basic-info-next-status');
 
     if (!carouselElement || !form || !previousButton || !nextButton || !progress || !stepLabel ||
-        !serviceSelect || !serviceOtherInput || !serviceOtherModalElement || !serviceOtherSaveButton ||
-        !nextSectionModalElement || !continueButton || !continueButtonLabel || !nextSectionStatus) {
+        !serviceSelect || !serviceOtherInput || !serviceOtherModalElement || !serviceOtherSaveButton) {
         console.error('The basic information form is missing required survey controls.');
         return;
     }
@@ -86,9 +269,12 @@ function initializeBasicInfo() {
         console.error('The basic information carousel has no steps.');
         return;
     }
-    var currentIndex = 0;
-    var nextSectionTimer = null;
-    var redirectRequested = false;
+    var currentIndex = steps.findIndex(function (step) {
+        return step.classList.contains('active');
+    });
+    if (currentIndex < 0) {
+        currentIndex = 0;
+    }
     var nextButtonMarkup = nextButton.innerHTML;
     var carousel = new bootstrap.Carousel(carouselElement, {
         interval: false,
@@ -97,65 +283,6 @@ function initializeBasicInfo() {
         wrap: false
     });
     var serviceOtherModal = new bootstrap.Modal(serviceOtherModalElement);
-    var nextSectionModal = new bootstrap.Modal(nextSectionModalElement, {
-        backdrop: 'static',
-        keyboard: false
-    });
-
-    function continueToNextSection() {
-        if (redirectRequested) {
-            return;
-        }
-
-        redirectRequested = true;
-        if (nextSectionTimer !== null) {
-            window.clearInterval(nextSectionTimer);
-            nextSectionTimer = null;
-        }
-
-        continueButton.disabled = true;
-        continueButtonLabel.textContent = 'Loading...';
-        nextSectionStatus.textContent = 'Loading the next part of the survey.';
-        nextSectionModal.hide();
-    }
-
-    function handleNextSectionLoadError() {
-        redirectRequested = false;
-        continueButton.disabled = false;
-        continueButtonLabel.textContent = 'Try again';
-        nextSectionStatus.textContent = 'The next part could not be loaded. Please try again.';
-        nextSectionStatus.className = 'alert alert-danger mt-3 mb-0';
-        nextSectionModal.show();
-    }
-
-    nextSectionModalElement.addEventListener('shown.bs.modal', function () {
-        if (redirectRequested) {
-            return;
-        }
-
-        var secondsRemaining = 3;
-        continueButtonLabel.textContent = 'Continue in ' + secondsRemaining + 's';
-        nextSectionStatus.textContent = 'Continuing automatically in ' + secondsRemaining + ' seconds.';
-        nextSectionTimer = window.setInterval(function () {
-            secondsRemaining -= 1;
-            continueButtonLabel.textContent = secondsRemaining > 0
-                ? 'Continue in ' + secondsRemaining + 's'
-                : 'Continuing...';
-            nextSectionStatus.textContent = 'Continuing automatically in ' + secondsRemaining + ' seconds.';
-
-            if (secondsRemaining <= 0) {
-                continueToNextSection();
-            }
-        }, 1000);
-    });
-
-    nextSectionModalElement.addEventListener('hidden.bs.modal', function () {
-        if (redirectRequested) {
-            loadCCSection(handleNextSectionLoadError);
-        }
-    });
-
-    continueButton.addEventListener('click', continueToNextSection);
 
     function showServiceOtherModal() {
         serviceOtherInput.required = true;
@@ -225,11 +352,10 @@ function initializeBasicInfo() {
         }
 
         if (currentIndex === steps.length - 1) {
-            continueButton.disabled = false;
-            continueButtonLabel.textContent = 'Continue in 5s';
-            nextSectionStatus.className = 'd-none';
-            nextSectionStatus.textContent = 'Continuing automatically in 5 seconds.';
-            nextSectionModal.show();
+            nextButton.disabled = true;
+            loadCCSection(function () {
+                nextButton.disabled = false;
+            });
             return;
         }
 
@@ -273,7 +399,12 @@ function initializeCC() {
         return;
     }
 
-    var currentIndex = 0;
+    var currentIndex = steps.findIndex(function (step) {
+        return step.classList.contains('active');
+    });
+    if (currentIndex < 0) {
+        currentIndex = 0;
+    }
     var completed = false;
     var nextButtonMarkup = nextButton.innerHTML;
     var carousel = new bootstrap.Carousel(carouselElement, {
@@ -291,15 +422,16 @@ function initializeCC() {
     }
 
     function finishCC() {
-        completed = true;
-        completionMessage.classList.remove('d-none');
         nextButton.disabled = true;
+        loadSQDSection(function () {
+            nextButton.disabled = false;
+        });
     }
 
     function updateControls() {
         progress.textContent = (currentIndex + 1) + ' of ' + steps.length;
         stepLabel.textContent = 'Question ' + (currentIndex + 1) + ' of ' + steps.length;
-        previousButton.disabled = currentIndex === 0;
+        previousButton.disabled = false;
         nextButton.innerHTML = finishesCurrentQuestion()
             ? 'Finish <i class="bi bi-check-lg ms-1" aria-hidden="true"></i>'
             : nextButtonMarkup;
@@ -325,7 +457,7 @@ function initializeCC() {
 
     carouselElement.addEventListener('slid.bs.carousel', function (event) {
         currentIndex = event.to;
-        previousButton.disabled = currentIndex === 0;
+        previousButton.disabled = false;
         nextButton.disabled = false;
         updateControls();
     });
@@ -357,6 +489,7 @@ function initializeCC() {
 
     previousButton.addEventListener('click', function () {
         if (currentIndex === 0) {
+            navigateToPreviousSection();
             return;
         }
 
@@ -386,6 +519,135 @@ function initializeCC() {
     });
 
     updateControls();
+}
+
+function initializeSQD() {
+    var carouselElement = document.getElementById('sqd-carousel');
+    var previousButton = document.getElementById('sqd-previous');
+    var nextButton = document.getElementById('sqd-next');
+    var progress = document.getElementById('sqd-progress');
+    var stepLabel = document.getElementById('sqd-step-label');
+
+    if (!carouselElement || !previousButton || !nextButton || !progress || !stepLabel) {
+        console.error('The service quality survey is missing required controls.');
+        return;
+    }
+
+    var steps = Array.prototype.slice.call(carouselElement.querySelectorAll('.carousel-item'));
+    if (steps.length !== 8) {
+        console.error('The service quality survey must contain exactly eight questions.');
+        return;
+    }
+
+    var currentIndex = steps.findIndex(function (step) {
+        return step.classList.contains('active');
+    });
+    if (currentIndex < 0) {
+        currentIndex = 0;
+    }
+    var nextButtonMarkup = nextButton.innerHTML;
+    var carousel = new bootstrap.Carousel(carouselElement, {
+        interval: false,
+        keyboard: false,
+        touch: false,
+        wrap: false
+    });
+
+    function updateControls() {
+        progress.textContent = (currentIndex + 1) + ' of ' + steps.length;
+        stepLabel.textContent = 'Question ' + (currentIndex + 1) + ' of ' + steps.length;
+        previousButton.disabled = false;
+        nextButton.innerHTML = currentIndex === steps.length - 1
+            ? 'Finish <i class="bi bi-check-lg ms-1" aria-hidden="true"></i>'
+            : nextButtonMarkup;
+    }
+
+    carouselElement.addEventListener('slide.bs.carousel', function () {
+        previousButton.disabled = true;
+        nextButton.disabled = true;
+    });
+
+    carouselElement.addEventListener('slid.bs.carousel', function (event) {
+        currentIndex = event.to;
+        previousButton.disabled = false;
+        nextButton.disabled = false;
+        updateControls();
+    });
+
+    nextButton.addEventListener('click', function () {
+        var firstChoice = steps[currentIndex].querySelector('input[type="radio"]');
+        if (!firstChoice) {
+            console.error('The current service quality question has no answer choices.');
+            return;
+        }
+
+        if (!firstChoice.checkValidity()) {
+            firstChoice.reportValidity();
+            return;
+        }
+
+        if (currentIndex === steps.length - 1) {
+            nextButton.disabled = true;
+            loadRemarksSection(function () {
+                nextButton.disabled = false;
+            });
+            return;
+        }
+
+        carousel.next();
+    });
+
+    previousButton.addEventListener('click', function () {
+        if (currentIndex === 0) {
+            navigateToPreviousSection();
+            return;
+        }
+
+        carousel.prev();
+    });
+
+    updateControls();
+}
+
+function initializeRemarks() {
+    var carouselElement = document.getElementById('remarks-carousel');
+    var form = document.getElementById('remarks-form');
+    var backButton = document.getElementById('remarks-back');
+
+    if (!carouselElement || !form || !backButton) {
+        console.error('The remarks section is missing its form or thank-you screen.');
+        return;
+    }
+
+    var slides = carouselElement.querySelectorAll('.carousel-item');
+    if (slides.length !== 2) {
+        console.error('The remarks carousel must contain a form and a thank-you screen.');
+        return;
+    }
+
+    var carousel = new bootstrap.Carousel(carouselElement, {
+        interval: false,
+        keyboard: false,
+        touch: false,
+        wrap: false
+    });
+
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        carousel.next();
+    });
+
+    var backToSQDButton = document.getElementById('remarks-back-to-sqd');
+    if (!backToSQDButton) {
+        console.error('The remarks form is missing its back-to-SQD button.');
+        return;
+    }
+
+    backToSQDButton.addEventListener('click', navigateToPreviousSection);
+
+    backButton.addEventListener('click', function () {
+        carousel.prev();
+    });
 }
 
 if (!sectionChanger || !startSurveyButton) {
@@ -433,6 +695,7 @@ if (!sectionChanger || !startSurveyButton) {
             }
 
             sectionChanger.innerHTML = request.responseText;
+            activeSection = 'basicinfo';
             initializeBasicInfo();
         };
         request.onerror = function () {
