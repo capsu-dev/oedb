@@ -21,4 +21,13 @@ header h2 {
   height: 100vh;
   display: flex;
   flex-direction: row;
+}
+
+.survey-navigation {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  padding-top: 1rem;
+  padding-bottom: 0.5rem;
+  background-color: var(--bs-light, #f8f9fa);
 }/*# sourceMappingURL=index.css.map */

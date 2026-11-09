@@ -1,4 +1,4 @@
-<form id="basic-info-form" novalidate>
+<form id="basic-info-form" class="d-flex flex-column flex-grow-1" novalidate>
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
         <div>
             <p class="text-uppercase text-secondary small fw-semibold mb-1" id="basic-info-step-label">Step 1 of 6</p>
@@ -12,6 +12,14 @@
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <div class="age-body py-3">
+                    <label class="form-label fw-semibold" for="age">What is your name? (optional)</label>
+                    <input class="form-control form-control-lg" type="text" name="age" id="age" placeholder="Enter your name">
+                </div>
+            </div>
+
+
+            <div class="carousel-item">
+                <div class="age-body py-3">
                     <label class="form-label fw-semibold" for="age">How old are you?</label>
                     <input class="form-control form-control-lg" type="number" name="age" id="age" min="1" max="100" placeholder="Enter your age" required>
                 </div>
@@ -24,18 +32,33 @@
                         <option value="" selected disabled>Select an option</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
+                        <option value="female">Others</option>
                     </select>
                 </div>
             </div>
 
             <div class="carousel-item">
                 <div class="region-body py-3">
-                    <label class="form-label fw-semibold" for="region">Which region are you from?</label>
-                    <select class="form-select form-select-lg" name="region" id="region" required>
-                        <option value="" selected disabled>Select a region</option>
-                        <option value="0">North</option>
-                        <option value="1">East</option>
-                        <option value="2">South</option>
+                    <label class="form-label fw-semibold" for="region">Which municipality or city are you from?</label>
+                    <select class="form-select form-select-lg" name="municipality" id="municipality" required>
+                        <option value="" selected disabled>Select a municipality or city</option>
+                        <option value="roxas-city">Roxas City</option>
+                        <option value="cuartero">Cuartero</option>
+                        <option value="dao">Dao</option>
+                        <option value="dumalag">Dumalag</option>
+                        <option value="dumarao">Dumarao</option>
+                        <option value="ivisan">Ivisan</option>
+                        <option value="jamindan">Jamindan</option>
+                        <option value="ma-ayon">Ma-ayon</option>
+                        <option value="mambusao">Mambusao</option>
+                        <option value="panay">Panay</option>
+                        <option value="panitan">Panitan</option>
+                        <option value="pilar">Pilar</option>
+                        <option value="pontevedra">Pontevedra</option>
+                        <option value="president-roxas">President Roxas</option>
+                        <option value="sapian">Sapian</option>
+                        <option value="sigma">Sigma</option>
+                        <option value="tapaz">Tapaz</option>
                     </select>
                 </div>
             </div>
@@ -44,9 +67,88 @@
                 <div class="agency-body py-3">
                     <label class="form-label fw-semibold" for="agency">Which agency did you visit?</label>
                     <select class="form-select form-select-lg" name="agency" id="agency" required>
-                        <option value="" selected disabled>Select an agency</option>
-                        <option value="0">Department of Industrial Technology</option>
-                        <option value="1">Department of Research and Extension</option>
+                        <option value="" selected disabled>Select a department or office</option>
+
+                        <optgroup label="Office of the University President">
+                            <option value="office-of-the-president">Office of the University President</option>
+                            <option value="board-secretary">Office of the Board Secretary</option>
+                            <option value="internal-audit">Internal Audit Office</option>
+                            <option value="legal-office">Legal Office</option>
+                        </optgroup>
+
+                        <optgroup label="Academic Affairs">
+                            <option value="vp-academic-affairs">Office of the Vice President for Academic Affairs</option>
+                            <option value="instruction">Office of the Director for Instruction</option>
+                            <option value="student-affairs">Office of Student Affairs and Services</option>
+                            <option value="library-services">Library Services</option>
+                            <option value="quality-assurance">Quality Assurance Office</option>
+                            <option value="publication">Publication, Instructional Materials and Creative Works</option>
+                        </optgroup>
+
+                        <optgroup label="Administration and Finance">
+                            <option value="vp-administration-finance">Office of the Vice President for Administration and Finance</option>
+                            <option value="human-resource">Human Resource Management Office</option>
+                            <option value="budget">Budget Office</option>
+                            <option value="accounting">Accounting Office</option>
+                            <option value="cashier">Cash Unit</option>
+                            <option value="records">Records Office</option>
+                            <option value="general-services">General Services Unit</option>
+                            <option value="supply-property">Supply and Property Management Unit</option>
+                            <option value="procurement">Procurement Unit</option>
+                            <option value="bids-awards">Bids and Awards Committee</option>
+                        </optgroup>
+
+                        <optgroup label="Research, Development and Extension">
+                            <option value="vp-research-extension">Office of the Vice President for Research and Extension</option>
+                            <option value="research-office">Research Office</option>
+                            <option value="extension-office">Extension Office</option>
+                            <option value="ip-management">Intellectual Property Management Office</option>
+                            <option value="food-industrial-technology">Food Industrial Technology Research and Development Center</option>
+                            <option value="fisheries-aquamarine">Fisheries and Aqua-Marine Research and Development Center</option>
+                            <option value="crop-science">Crop Science Research and Development Center</option>
+                            <option value="social-science">Social Science Research and Development Center</option>
+                            <option value="livestock">Livestock Research and Development Center</option>
+                        </optgroup>
+
+                        <optgroup label="External Affairs and Linkages">
+                            <option value="vp-external-affairs">Office of the Vice President for External Affairs and Linkages</option>
+                            <option value="international-national-affairs">International and National Affairs</option>
+                            <option value="alumni-community">Alumni and Community Affairs</option>
+                        </optgroup>
+
+                        <optgroup label="University Offices and Services">
+                            <option value="digitalization">Digitalization Office</option>
+                            <option value="mis">Management Information Systems Office</option>
+                            <option value="planning">Planning Office</option>
+                            <option value="information-unit">Information Unit</option>
+                            <option value="gender-development">Gender and Development Office</option>
+                            <option value="disaster-risk-reduction">Disaster Risk Reduction and Management Office</option>
+                            <option value="climate-change">Climate Change Management Office</option>
+                            <option value="nstp">National Service Training Program</option>
+                            <option value="sports-services">Sports Services</option>
+                            <option value="cultural-services">Cultural Services</option>
+                            <option value="grievance-complaint">Grievance and Complaint Management Office</option>
+                            <option value="university-business">University Business Affairs</option>
+                            <option value="project-management">Project Management Office</option>
+                            <option value="eco-tourism">Eco-Tourism, Landholdings and Physical Resources</option>
+                            <option value="data-protection">Data Protection Office</option>
+                            <option value="quality-management">Quality Management Office</option>
+                        </optgroup>
+
+                        <optgroup label="Campuses and Satellite Colleges">
+                            <option value="main-campus">Main Campus - Roxas City</option>
+                            <option value="pontevedra-campus">Pontevedra Campus</option>
+                            <option value="burias-campus">Burias Campus</option>
+                            <option value="dayao-campus">Dayao Satellite College</option>
+                            <option value="pilar-campus">Pilar Satellite College</option>
+                            <option value="mambusao-campus">Mambusao Satellite College</option>
+                            <option value="dumarao-campus">Dumarao Satellite College</option>
+                            <option value="sigma-campus">Sigma Satellite College</option>
+                            <option value="tapaz-campus">Tapaz Satellite College</option>
+                            <option value="sapian-campus">CAPSU Sapian</option>
+                        </optgroup>
+
+                        <option value="other">Others</option>
                     </select>
                 </div>
             </div>
@@ -55,11 +157,7 @@
                 <div class="service-body py-3">
                     <label class="form-label fw-semibold" for="service">Which service did you avail?</label>
                     <select class="form-select form-select-lg" name="service" id="service" required>
-                        <option value="" selected disabled>Select a service</option>
-                        <option value="0">Request for Transcript of Records</option>
-                        <option value="1">Request for Certificate of Good Moral Character</option>
-                        <option value="2">Request for Certificate of Enrollment</option>
-                        <option value="3">Others (please specify)</option>
+                        <option value="" selected disabled>Select a department or office first</option>
                     </select>
                 </div>
             </div>
@@ -98,7 +196,7 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center gap-3 mt-4">
+    <div class="survey-navigation d-flex justify-content-between align-items-center gap-3 mt-auto">
         <button class="btn btn-outline-secondary" id="basic-info-previous" type="button" disabled>
             <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Back
         </button>
