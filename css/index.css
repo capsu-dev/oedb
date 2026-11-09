@@ -1,0 +1,24 @@
+* {
+  color: #0C356A;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}
+
+.imgser-child {
+  width: 5vw !important;
+}
+
+header h2 {
+  font-size: 0.75rem;
+  letter-spacing: 0.05rem;
+}
+
+.basicinfobody {
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+}/*# sourceMappingURL=index.css.map */

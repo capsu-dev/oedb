@@ -1,0 +1,93 @@
+<form id="basic-info-form" novalidate>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+        <div>
+            <p class="text-uppercase text-secondary small fw-semibold mb-1" id="basic-info-step-label">Step 1 of 6</p>
+            <h1 class="h3 fw-bold mb-0">Let's get to know you.</h1>
+        </div>
+        <i class="bi bi-person-lines-fill fs-2 text-primary" aria-hidden="true"></i>
+    </div>
+    <p class="text-secondary mb-4">Please provide some basic information about yourself. This will help us better understand your needs and preferences.</p>
+
+    <div id="basic-info-carousel" class="carousel slide" data-bs-interval="false" aria-label="Basic information">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="age-body py-3">
+                    <label class="form-label fw-semibold" for="age">How old are you?</label>
+                    <input class="form-control form-control-lg" type="number" name="age" id="age" min="1" max="100" placeholder="Enter your age" required>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="sex-body py-3">
+                    <label class="form-label fw-semibold" for="sex">What is your sex?</label>
+                    <select class="form-select form-select-lg" name="sex" id="sex" required>
+                        <option value="" selected disabled>Select an option</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="region-body py-3">
+                    <label class="form-label fw-semibold" for="region">Which region are you from?</label>
+                    <select class="form-select form-select-lg" name="region" id="region" required>
+                        <option value="" selected disabled>Select a region</option>
+                        <option value="0">North</option>
+                        <option value="1">East</option>
+                        <option value="2">South</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="agency-body py-3">
+                    <label class="form-label fw-semibold" for="agency">Which agency did you visit?</label>
+                    <select class="form-select form-select-lg" name="agency" id="agency" required>
+                        <option value="" selected disabled>Select an agency</option>
+                        <option value="0">Department of Industrial Technology</option>
+                        <option value="1">Department of Research and Extension</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="service-body py-3">
+                    <label class="form-label fw-semibold" for="service">Which service did you avail?</label>
+                    <select class="form-select form-select-lg" name="service" id="service" required>
+                        <option value="" selected disabled>Select a service</option>
+                        <option value="0">Request for Transcript of Records</option>
+                        <option value="1">Request for Certificate of Good Moral Character</option>
+                        <option value="2">Request for Certificate of Enrollment</option>
+                        <option value="3">Others</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="customer-type-body py-3">
+                    <label class="form-label fw-semibold" for="customer-type">What is your customer type?</label>
+                    <select class="form-select form-select-lg" name="customerType" id="customer-type" required>
+                        <option value="" selected disabled>Select a customer type</option>
+                        <option value="0">Citizen</option>
+                        <option value="1">Business</option>
+                        <option value="2">Government</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center gap-3 mt-4">
+        <button class="btn btn-outline-secondary" id="basic-info-previous" type="button" disabled>
+            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Back
+        </button>
+        <span class="small text-secondary text-nowrap" id="basic-info-progress" aria-live="polite">1 of 6</span>
+        <button class="btn btn-primary" id="basic-info-next" type="button">
+            Next <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="alert alert-success mt-4 mb-0 d-none" id="basic-info-complete" role="status">
+        <i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i>Basic information complete.
+    </div>
+</form>
