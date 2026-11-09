@@ -4,7 +4,7 @@
             <p class="text-uppercase text-secondary small fw-semibold mb-1" id="basic-info-step-label">Step 1 of 6</p>
             <h1 class="h3 fw-bold mb-0">Let's get to know you.</h1>
         </div>
-        <i class="bi bi-person-lines-fill fs-2 text-primary" aria-hidden="true"></i>
+        
     </div>
     <p class="text-secondary mb-4">Please provide some basic information about yourself. This will help us better understand your needs and preferences.</p>
 
@@ -59,7 +59,7 @@
                         <option value="0">Request for Transcript of Records</option>
                         <option value="1">Request for Certificate of Good Moral Character</option>
                         <option value="2">Request for Certificate of Enrollment</option>
-                        <option value="3">Others</option>
+                        <option value="3">Others (please specify)</option>
                     </select>
                 </div>
             </div>
@@ -78,6 +78,45 @@
         </div>
     </div>
 
+    <div class="modal fade" id="service-other-modal" tabindex="-1" aria-labelledby="service-other-modal-title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="service-other-modal-title">Tell us about the service</h2>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label fw-semibold" for="service-other">What service did you avail?</label>
+                    <textarea class="form-control" id="service-other" name="serviceOther" rows="3" maxlength="300" placeholder="Describe the service" aria-describedby="service-other-help"></textarea>
+                    <div class="form-text" id="service-other-help">Please describe the service you received.</div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" id="service-other-save" type="button">Save service</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="basic-info-next-modal" tabindex="-1" aria-labelledby="basic-info-next-modal-title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4 p-md-5">
+                    <i class="bi bi-check-circle-fill display-4 text-success" aria-hidden="true"></i>
+                    <h2 class="h4 fw-bold mt-3" id="basic-info-next-modal-title">Thank you!</h2>
+                    <p class="text-secondary mb-4">Your basic information is complete. Continue to the next part of the survey.</p>
+                    <p class="d-none" id="basic-info-next-status" role="status" aria-live="polite">
+                        Your basic information is complete.
+                    </p>
+                    <button class="btn btn-primary px-4" id="basic-info-continue" type="button">
+                        <span id="basic-info-continue-label">Continue in 5s</span>
+                        <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="d-flex justify-content-between align-items-center gap-3 mt-4">
         <button class="btn btn-outline-secondary" id="basic-info-previous" type="button" disabled>
             <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Back
@@ -86,8 +125,5 @@
         <button class="btn btn-primary" id="basic-info-next" type="button">
             Next <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
         </button>
-    </div>
-    <div class="alert alert-success mt-4 mb-0 d-none" id="basic-info-complete" role="status">
-        <i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i>Basic information complete.
     </div>
 </form>

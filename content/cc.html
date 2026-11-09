@@ -1,0 +1,87 @@
+<form id="cc-form" novalidate>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+        <div>
+            <p class="text-uppercase text-secondary small fw-semibold mb-1" id="cc-step-label">Question 1 of 3</p>
+            <h1 class="h3 fw-bold mb-0">Citizen's Charter</h1>
+        </div>
+        <i class="bi bi-journal-check fs-2 text-primary" aria-hidden="true"></i>
+    </div>
+    <p class="text-secondary mb-4">Please answer the following questions about this office's Citizen's Charter (CC).</p>
+
+    <div id="cc-carousel" class="carousel slide" data-bs-interval="false" aria-label="Citizen's Charter questions">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="py-3">
+                    <label class="form-label fw-semibold" for="cc1">
+                        CC1. Do you know about the Citizen's Charter (document of an agency's services and requirements)?
+                    </label>
+                    <select class="form-select form-select-lg" name="cc1" id="cc1" required>
+                        <option value="" selected disabled>Select an answer</option>
+                        <option value="aware-before">Yes, I was aware before my transaction with this office</option>
+                        <option value="aware-here">Yes, but I became aware only when I saw this office's CC</option>
+                        <option value="not-aware">No, I am not aware of the CC (skip CC2 and CC3)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="py-3">
+                    <label class="form-label fw-semibold" for="cc2">
+                        CC2. Did you see this office's Citizen's Charter?
+                    </label>
+                    <select class="form-select form-select-lg" name="cc2" id="cc2" required>
+                        <option value="" selected disabled>Select an answer</option>
+                        <option value="easy-to-find">Yes, the CC was easy to find</option>
+                        <option value="hard-to-find">Yes, but the CC was hard to find</option>
+                        <option value="not-seen">No, I did not see this office's CC (skip CC3)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="py-3">
+                    <label class="form-label fw-semibold" for="cc3">
+                        CC3. Did you use the Citizen's Charter as a guide for the services you availed?
+                    </label>
+                    <select class="form-select form-select-lg" name="cc3" id="cc3" required>
+                        <option value="" selected disabled>Select an answer</option>
+                        <option value="used">Yes, I was able to use the CC</option>
+                        <option value="not-used">No, I was not able to use the CC</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="cc3-reason-modal" tabindex="-1" aria-labelledby="cc3-reason-modal-title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="cc3-reason-modal-title">Please tell us why</h2>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label fw-semibold" for="cc3-reason">Why were you unable to use the Citizen's Charter?</label>
+                    <textarea class="form-control" id="cc3-reason" name="cc3Reason" rows="3" maxlength="500" placeholder="Enter your reason"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" id="cc3-reason-save" type="button">Save reason</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center gap-3 mt-4">
+        <button class="btn btn-outline-secondary" id="cc-previous" type="button" disabled>
+            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Back
+        </button>
+        <span class="small text-secondary text-nowrap" id="cc-progress" aria-live="polite">1 of 3</span>
+        <button class="btn btn-primary" id="cc-next" type="button">
+            Next <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="alert alert-success mt-4 mb-0 d-none" id="cc-complete" role="status">
+        <i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i>Citizen's Charter questions complete.
+    </div>
+</form>
