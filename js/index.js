@@ -6,6 +6,7 @@ var remarksLoadPending = false;
 var activeSection = null;
 var sectionHistory = [];
 var forwardSections = [];
+var surveyConfig = null;
 
 function animateSection(direction) {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !sectionChanger.animate) {
@@ -45,6 +46,37 @@ function restoreControlValues(values) {
             control.checked = values[index].checked;
         }
     });
+}
+
+function startQuestionAdvanceTimer(indicator, progressBar, onComplete) {
+    var duration = surveyConfig.settings.autoAdvanceDurationMs;
+    var startedAt = Date.now();
+
+    function stop() {
+        window.clearInterval(interval);
+        indicator.classList.add('d-none');
+        progressBar.style.width = '0%';
+        progressBar.setAttribute('aria-valuenow', '0');
+    }
+
+    function updateProgress() {
+        var percentage = Math.min(((Date.now() - startedAt) / duration) * 100, 100);
+        var roundedPercentage = Math.floor(percentage);
+        progressBar.style.width = percentage + '%';
+        progressBar.setAttribute('aria-valuenow', String(roundedPercentage));
+
+        if (percentage >= 100) {
+            stop();
+            onComplete();
+        }
+    }
+
+    indicator.classList.remove('d-none');
+    progressBar.style.width = '0%';
+    progressBar.setAttribute('aria-valuenow', '0');
+
+    var interval = window.setInterval(updateProgress, 50);
+    return stop;
 }
 
 function initializeSection(stage) {
@@ -129,7 +161,9 @@ function showLoadError(message) {
     errorMessage.className = 'alert alert-danger mt-3';
     errorMessage.classList.add('survey-load-error');
     errorMessage.setAttribute('role', 'alert');
-    errorMessage.textContent = 'The survey could not be loaded. Please try again.';
+    errorMessage.textContent = surveyConfig
+        ? surveyConfig.text.loadError
+        : 'The survey could not be loaded. Please try again.';
     if (!errorMessage.parentNode) {
         sectionChanger.appendChild(errorMessage);
     }
@@ -266,8 +300,8 @@ function initializeBasicInfo() {
     }
 
     var steps = Array.prototype.slice.call(carouselElement.querySelectorAll('.carousel-item'));
-    if (steps.length === 0) {
-        console.error('The basic information carousel has no steps.');
+    if (steps.length !== 2) {
+        console.error('The basic information carousel must contain exactly two grouped steps.');
         return;
     }
     var currentIndex = steps.findIndex(function (step) {
@@ -277,287 +311,31 @@ function initializeBasicInfo() {
         currentIndex = 0;
     }
     var nextButtonMarkup = nextButton.innerHTML;
+    var text = surveyConfig.text;
     var carousel = new bootstrap.Carousel(carouselElement, {
         interval: false,
         keyboard: false,
-        touch: false,
+        touch: true,
         wrap: false
     });
     var serviceOtherModal = new bootstrap.Modal(serviceOtherModalElement);
-    var serviceCatalogs = {
-        executive: [
-            'Request information or assistance from the office',
-            'Submit documents for review or endorsement',
-            'Request coordination or approval'
-        ],
-        academic: [
-            'Request academic information or assistance',
-            'Submit academic documents for review',
-            'Request instructional or program support'
-        ],
-        studentRecords: [
-            'Request for Transcript of Records',
-            'Request for Certificate of Good Moral Character',
-            'Request for Certificate of Enrollment'
-        ],
-        studentAffairs: [
-            'Request student support or counseling',
-            'Request student organization assistance',
-            'Request information about student programs or activities'
-        ],
-        library: [
-            'Borrow or renew library materials',
-            'Request library research assistance',
-            'Request library access or account assistance'
-        ],
-        quality: [
-            'Request quality assurance or accreditation information',
-            'Submit documents for quality review',
-            'Request quality management assistance'
-        ],
-        publication: [
-            'Request publication or editorial assistance',
-            'Request instructional material development support',
-            'Submit creative or instructional work for review'
-        ],
-        administration: [
-            'Request administrative or operational assistance',
-            'Submit documents for office processing',
-            'Request information about university procedures'
-        ],
-        humanResource: [
-            'Request personnel or employment records',
-            'Request human resource or leave assistance',
-            'Request information about recruitment or employee benefits'
-        ],
-        budget: [
-            'Request budget allocation or availability information',
-            'Submit budget documents for review',
-            'Request budget processing assistance'
-        ],
-        accounting: [
-            'Request accounting or financial document processing',
-            'Submit documents for accounting review',
-            'Request information about payment or liquidation requirements'
-        ],
-        cashier: [
-            'Pay university fees or charges',
-            'Request an official receipt or payment record',
-            'Request assistance with refunds or payment concerns'
-        ],
-        records: [
-            'Request a copy of an office record or document',
-            'Submit documents for receiving or records processing',
-            'Request records verification or certification'
-        ],
-        facilities: [
-            'Request repair or maintenance of university facilities',
-            'Request facility or equipment assistance',
-            'Request housekeeping or utility support'
-        ],
-        property: [
-            'Request supplies or property items',
-            'Submit property accountability or inventory documents',
-            'Request property or equipment assistance'
-        ],
-        procurement: [
-            'Submit a procurement request',
-            'Request procurement or bidding information',
-            'Request supplier or procurement process assistance'
-        ],
-        bidsAwards: [
-            'Request bidding or procurement documents',
-            'Submit bidding requirements',
-            'Request information about a procurement activity'
-        ],
-        research: [
-            'Request research program or project assistance',
-            'Submit a research proposal or report',
-            'Request research funding or coordination information'
-        ],
-        extension: [
-            'Request extension or community program assistance',
-            'Request community training or technical support',
-            'Propose or coordinate an extension activity'
-        ],
-        intellectualProperty: [
-            'Request intellectual property or technology transfer assistance',
-            'Submit an invention or creative work for evaluation',
-            'Request information about intellectual property protection'
-        ],
-        researchCenter: [
-            'Request research or laboratory assistance',
-            'Request technical information or testing support',
-            'Propose or coordinate a research activity'
-        ],
-        externalAffairs: [
-            'Request partnership or institutional linkages assistance',
-            'Coordinate an international or national activity',
-            'Request information about external affairs programs'
-        ],
-        alumni: [
-            'Request alumni records or verification',
-            'Coordinate an alumni or community activity',
-            'Request alumni or community affairs assistance'
-        ],
-        digitalization: [
-            'Request digital service or online system assistance',
-            'Request help with a digitalization project',
-            'Report an issue with a university digital service'
-        ],
-        it: [
-            'Request computer, network, or account support',
-            'Request information system access or assistance',
-            'Report an information technology issue'
-        ],
-        planning: [
-            'Request university planning or development information',
-            'Submit planning or monitoring documents',
-            'Request institutional data or planning assistance'
-        ],
-        information: [
-            'Request university information or materials',
-            'Request assistance with a public information matter',
-            'Submit information or materials for publication'
-        ],
-        genderDevelopment: [
-            'Request gender and development program assistance',
-            'Request information about GAD activities or training',
-            'Request referral or support related to gender concerns'
-        ],
-        disasterRisk: [
-            'Request disaster preparedness or safety information',
-            'Request risk reduction or emergency coordination',
-            'Request disaster preparedness training or assistance'
-        ],
-        climate: [
-            'Request climate change or environmental information',
-            'Coordinate an environmental or climate activity',
-            'Request climate change program assistance'
-        ],
-        nstp: [
-            'Request NSTP enrollment or program information',
-            'Request community immersion or deployment assistance',
-            'Submit NSTP documents or requirements'
-        ],
-        sports: [
-            'Request sports facility or equipment assistance',
-            'Register or request information about sports activities',
-            'Coordinate a sports event or program'
-        ],
-        culture: [
-            'Request cultural program or event assistance',
-            'Participate in or coordinate a cultural activity',
-            'Request information about university cultural services'
-        ],
-        grievance: [
-            'File or follow up a grievance or complaint',
-            'Request assistance with complaint procedures',
-            'Request information about grievance resolution'
-        ],
-        business: [
-            'Request university business or commercial service information',
-            'Submit a business or concession proposal',
-            'Request assistance with a university business transaction'
-        ],
-        project: [
-            'Request project coordination or implementation assistance',
-            'Submit project documents for review',
-            'Request information about a university project'
-        ],
-        ecotourism: [
-            'Request eco-tourism or landholding information',
-            'Request access or assistance for a university site',
-            'Coordinate an eco-tourism or land management activity'
-        ],
-        dataProtection: [
-            'Request privacy or personal data assistance',
-            'Submit a data privacy concern or request',
-            'Request information about personal data handling'
-        ],
-        qualityManagement: [
-            'Request quality management system assistance',
-            'Submit documents for quality management review',
-            'Request information about quality procedures'
-        ],
-        campus: [
-            'Request for Transcript of Records',
-            'Request for Certificate of Good Moral Character',
-            'Request for Certificate of Enrollment',
-            'Request admission or registration assistance'
-        ],
-        otherOffice: [
-            'Request information or assistance from the office',
-            'Submit documents for office processing',
-            'Request a record or document from the office'
-        ]
-    };
-    var officeServiceCatalogs = {
-        'office-of-the-president': 'executive',
-        'board-secretary': 'executive',
-        'internal-audit': 'administration',
-        'legal-office': 'administration',
-        'vp-academic-affairs': 'academic',
-        instruction: 'academic',
-        'student-affairs': 'studentAffairs',
-        'library-services': 'library',
-        'quality-assurance': 'quality',
-        publication: 'publication',
-        'vp-administration-finance': 'administration',
-        'human-resource': 'humanResource',
-        budget: 'budget',
-        accounting: 'accounting',
-        cashier: 'cashier',
-        records: 'records',
-        'general-services': 'facilities',
-        'supply-property': 'property',
-        procurement: 'procurement',
-        'bids-awards': 'bidsAwards',
-        'vp-research-extension': 'research',
-        'research-office': 'research',
-        'extension-office': 'extension',
-        'ip-management': 'intellectualProperty',
-        'food-industrial-technology': 'researchCenter',
-        'fisheries-aquamarine': 'researchCenter',
-        'crop-science': 'researchCenter',
-        'social-science': 'researchCenter',
-        livestock: 'researchCenter',
-        'vp-external-affairs': 'externalAffairs',
-        'international-national-affairs': 'externalAffairs',
-        'alumni-community': 'alumni',
-        digitalization: 'digitalization',
-        mis: 'it',
-        planning: 'planning',
-        'information-unit': 'information',
-        'gender-development': 'genderDevelopment',
-        'disaster-risk-reduction': 'disasterRisk',
-        'climate-change': 'climate',
-        nstp: 'nstp',
-        'sports-services': 'sports',
-        'cultural-services': 'culture',
-        'grievance-complaint': 'grievance',
-        'university-business': 'business',
-        'project-management': 'project',
-        'eco-tourism': 'ecotourism',
-        'data-protection': 'dataProtection',
-        'quality-management': 'qualityManagement',
-        'main-campus': 'campus',
-        'pontevedra-campus': 'campus',
-        'burias-campus': 'campus',
-        'dayao-campus': 'campus',
-        'pilar-campus': 'campus',
-        'mambusao-campus': 'campus',
-        'dumarao-campus': 'campus',
-        'sigma-campus': 'campus',
-        'tapaz-campus': 'campus',
-        'sapian-campus': 'campus',
-        other: 'otherOffice'
-    };
+    var serviceCatalogs = surveyConfig.serviceCatalogs;
+    var officeServiceCatalogs = surveyConfig.officeServiceCatalogs;
+
+    function setServicePlaceholder(label) {
+        serviceSelect.innerHTML = '';
+        var placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        placeholder.textContent = label;
+        serviceSelect.appendChild(placeholder);
+    }
 
     function renderServiceOptions(resetSelection) {
         var selectedService = resetSelection ? '' : serviceSelect.value;
         if (!agencySelect.value) {
-            serviceSelect.innerHTML = '<option value="" selected disabled>Select a department or office first</option>';
+            setServicePlaceholder(text.serviceSelectOfficePrompt);
             serviceSelect.disabled = true;
             return;
         }
@@ -569,7 +347,7 @@ function initializeBasicInfo() {
             services = serviceCatalogs.otherOffice;
         }
 
-        serviceSelect.innerHTML = '<option value="" selected disabled>Select a service</option>';
+        setServicePlaceholder(text.serviceSelectPrompt);
         serviceSelect.disabled = false;
         services.forEach(function (service) {
             var option = document.createElement('option');
@@ -580,7 +358,7 @@ function initializeBasicInfo() {
 
         var otherOption = document.createElement('option');
         otherOption.value = 'other';
-        otherOption.textContent = 'Others (please specify)';
+        otherOption.textContent = text.otherServiceOption;
         serviceSelect.appendChild(otherOption);
 
         if (selectedService && Array.prototype.some.call(serviceSelect.options, function (option) {
@@ -619,7 +397,7 @@ function initializeBasicInfo() {
 
     serviceOtherSaveButton.addEventListener('click', function () {
         if (!serviceOtherInput.value.trim()) {
-            serviceOtherInput.setCustomValidity('Please describe the service you received.');
+            serviceOtherInput.setCustomValidity(text.otherServiceRequired);
             serviceOtherInput.reportValidity();
             return;
         }
@@ -637,7 +415,29 @@ function initializeBasicInfo() {
             : nextButtonMarkup;
     }
 
-    carouselElement.addEventListener('slide.bs.carousel', function () {
+    function validateCurrentStep() {
+        var requiredFields = steps[currentIndex].querySelectorAll('input[required], select[required], textarea[required]');
+        for (var i = 0; i < requiredFields.length; i++) {
+            if (!requiredFields[i].checkValidity()) {
+                requiredFields[i].reportValidity();
+                return false;
+            }
+        }
+
+        if (serviceSelect.value === 'other' && !serviceOtherInput.value.trim()) {
+            showServiceOtherModal();
+            return false;
+        }
+
+        return true;
+    }
+
+    carouselElement.addEventListener('slide.bs.carousel', function (event) {
+        if (event.to > event.from && !validateCurrentStep()) {
+            event.preventDefault();
+            return;
+        }
+
         previousButton.disabled = true;
         nextButton.disabled = true;
     });
@@ -650,19 +450,7 @@ function initializeBasicInfo() {
     });
 
     nextButton.addEventListener('click', function () {
-        var field = steps[currentIndex].querySelector('input, select, textarea');
-        if (!field) {
-            console.error('The current survey step has no input to validate.');
-            return;
-        }
-
-        if (!field.checkValidity()) {
-            field.reportValidity();
-            return;
-        }
-
-        if (field === serviceSelect && serviceSelect.value === 'other' && !serviceOtherInput.value.trim()) {
-            showServiceOtherModal();
+        if (!validateCurrentStep()) {
             return;
         }
 
@@ -694,16 +482,14 @@ function initializeCC() {
     var nextButton = document.getElementById('cc-next');
     var progress = document.getElementById('cc-progress');
     var stepLabel = document.getElementById('cc-step-label');
-    var completionMessage = document.getElementById('cc-complete');
-    var cc1 = document.getElementById('cc1');
-    var cc2 = document.getElementById('cc2');
-    var cc3 = document.getElementById('cc3');
     var reasonInput = document.getElementById('cc3-reason');
     var reasonModalElement = document.getElementById('cc3-reason-modal');
     var reasonSaveButton = document.getElementById('cc3-reason-save');
+    var advanceIndicator = document.getElementById('cc-auto-advance');
+    var advanceProgress = document.getElementById('cc-auto-advance-progress');
 
-    if (!carouselElement || !previousButton || !nextButton || !progress || !stepLabel || !completionMessage ||
-        !cc1 || !cc2 || !cc3 || !reasonInput || !reasonModalElement || !reasonSaveButton) {
+    if (!carouselElement || !previousButton || !nextButton || !progress || !stepLabel ||
+        !reasonInput || !reasonModalElement || !reasonSaveButton || !advanceIndicator || !advanceProgress) {
         console.error('The Citizen Charter form is missing required survey controls.');
         return;
     }
@@ -720,8 +506,9 @@ function initializeCC() {
     if (currentIndex < 0) {
         currentIndex = 0;
     }
-    var completed = false;
+
     var nextButtonMarkup = nextButton.innerHTML;
+    var cancelAdvanceTimer = null;
     var carousel = new bootstrap.Carousel(carouselElement, {
         interval: false,
         keyboard: false,
@@ -730,16 +517,36 @@ function initializeCC() {
     });
     var reasonModal = new bootstrap.Modal(reasonModalElement);
 
+    function getAnswer(name) {
+        var selectedAnswer = carouselElement.querySelector('input[name="' + name + '"]:checked');
+        return selectedAnswer ? selectedAnswer.value : '';
+    }
+
     function finishesCurrentQuestion() {
         return currentIndex === 2 ||
-            (currentIndex === 0 && cc1.value === 'not-aware') ||
-            (currentIndex === 1 && cc2.value === 'not-seen');
+            (currentIndex === 0 && getAnswer('cc1') === 'not-aware') ||
+            (currentIndex === 1 && getAnswer('cc2') === 'not-seen');
     }
 
     function finishCC() {
         nextButton.disabled = true;
         loadSQDSection(function () {
             nextButton.disabled = false;
+        });
+    }
+
+    function clearAdvanceTimer() {
+        if (cancelAdvanceTimer !== null) {
+            cancelAdvanceTimer();
+            cancelAdvanceTimer = null;
+        }
+    }
+
+    function scheduleAdvance() {
+        clearAdvanceTimer();
+        cancelAdvanceTimer = startQuestionAdvanceTimer(advanceIndicator, advanceProgress, function () {
+            cancelAdvanceTimer = null;
+            nextButton.click();
         });
     }
 
@@ -752,24 +559,19 @@ function initializeCC() {
             : nextButtonMarkup;
     }
 
-    function handleAnswerChange() {
-        if (completed) {
-            completed = false;
-            completionMessage.classList.add('d-none');
-            nextButton.disabled = false;
+    carouselElement.addEventListener('change', function (event) {
+        if (!event.target.matches('input[type="radio"]') || !steps[currentIndex].contains(event.target)) {
+            return;
         }
+
         updateControls();
-    }
-
-    cc1.addEventListener('change', handleAnswerChange);
-    cc2.addEventListener('change', handleAnswerChange);
-    cc3.addEventListener('change', handleAnswerChange);
-
+        scheduleAdvance();
+    });
     carouselElement.addEventListener('slide.bs.carousel', function () {
+        clearAdvanceTimer();
         previousButton.disabled = true;
         nextButton.disabled = true;
     });
-
     carouselElement.addEventListener('slid.bs.carousel', function (event) {
         currentIndex = event.to;
         previousButton.disabled = false;
@@ -778,7 +580,8 @@ function initializeCC() {
     });
 
     nextButton.addEventListener('click', function () {
-        var field = steps[currentIndex].querySelector('select');
+        clearAdvanceTimer();
+        var field = steps[currentIndex].querySelector('input[type="radio"]');
         if (!field) {
             console.error('The current Citizen Charter step has no answer field.');
             return;
@@ -789,7 +592,7 @@ function initializeCC() {
             return;
         }
 
-        if (currentIndex === 2 && cc3.value === 'not-used') {
+        if (currentIndex === 2 && getAnswer('cc3') === 'not-used') {
             reasonModal.show();
             return;
         }
@@ -803,15 +606,10 @@ function initializeCC() {
     });
 
     previousButton.addEventListener('click', function () {
+        clearAdvanceTimer();
         if (currentIndex === 0) {
             navigateToPreviousSection();
             return;
-        }
-
-        if (completed) {
-            completed = false;
-            completionMessage.classList.add('d-none');
-            nextButton.disabled = false;
         }
 
         carousel.prev();
@@ -823,14 +621,14 @@ function initializeCC() {
 
     reasonSaveButton.addEventListener('click', function () {
         if (!reasonInput.value.trim()) {
-            reasonInput.setCustomValidity('Please tell us why you were unable to use the Citizen Charter.');
+            reasonInput.setCustomValidity(surveyConfig.text.ccReasonRequired);
             reasonInput.reportValidity();
             return;
         }
 
         reasonInput.setCustomValidity('');
+        reasonModalElement.addEventListener('hidden.bs.modal', finishCC, { once: true });
         reasonModal.hide();
-        finishCC();
     });
 
     updateControls();
@@ -861,12 +659,35 @@ function initializeSQD() {
         currentIndex = 0;
     }
     var nextButtonMarkup = nextButton.innerHTML;
+    var advanceIndicator = document.getElementById('sqd-auto-advance');
+    var advanceProgress = document.getElementById('sqd-auto-advance-progress');
+    if (!advanceIndicator || !advanceProgress) {
+        console.error('The service quality survey is missing its auto-advance indicator.');
+        return;
+    }
+
+    var cancelAdvanceTimer = null;
     var carousel = new bootstrap.Carousel(carouselElement, {
         interval: false,
         keyboard: false,
         touch: false,
         wrap: false
     });
+
+    function clearAdvanceTimer() {
+        if (cancelAdvanceTimer !== null) {
+            cancelAdvanceTimer();
+            cancelAdvanceTimer = null;
+        }
+    }
+
+    function scheduleAdvance() {
+        clearAdvanceTimer();
+        cancelAdvanceTimer = startQuestionAdvanceTimer(advanceIndicator, advanceProgress, function () {
+            cancelAdvanceTimer = null;
+            nextButton.click();
+        });
+    }
 
     function updateControls() {
         progress.textContent = (currentIndex + 1) + ' of ' + steps.length;
@@ -877,7 +698,15 @@ function initializeSQD() {
             : nextButtonMarkup;
     }
 
+    carouselElement.addEventListener('change', function (event) {
+        if (!event.target.matches('input[type="radio"]') || !steps[currentIndex].contains(event.target)) {
+            return;
+        }
+
+        scheduleAdvance();
+    });
     carouselElement.addEventListener('slide.bs.carousel', function () {
+        clearAdvanceTimer();
         previousButton.disabled = true;
         nextButton.disabled = true;
     });
@@ -890,6 +719,7 @@ function initializeSQD() {
     });
 
     nextButton.addEventListener('click', function () {
+        clearAdvanceTimer();
         var firstChoice = steps[currentIndex].querySelector('input[type="radio"]');
         if (!firstChoice) {
             console.error('The current service quality question has no answer choices.');
@@ -913,6 +743,7 @@ function initializeSQD() {
     });
 
     previousButton.addEventListener('click', function () {
+        clearAdvanceTimer();
         if (currentIndex === 0) {
             navigateToPreviousSection();
             return;
@@ -965,6 +796,68 @@ function initializeRemarks() {
     });
 }
 
+function loadSurveyConfig(onSuccess, onFailure) {
+    var request = new XMLHttpRequest();
+
+    request.onreadystatechange = function () {
+        if (request.readyState !== XMLHttpRequest.DONE) {
+            return;
+        }
+
+        if (request.status !== 200) {
+            onFailure('Unable to load config/survey-config.json. HTTP status: ' + request.status);
+            return;
+        }
+
+        var config;
+        try {
+            config = JSON.parse(request.responseText);
+        } catch (error) {
+            onFailure('The survey configuration is not valid JSON: ' + error.message);
+            return;
+        }
+
+        var catalogs = config && config.serviceCatalogs;
+        var catalogNames = catalogs ? Object.keys(catalogs) : [];
+        var hasValidCatalogs = catalogNames.length > 0 && catalogNames.every(function (name) {
+            return Array.isArray(catalogs[name]) && catalogs[name].every(function (service) {
+                return typeof service === 'string';
+            });
+        });
+        var settings = config && config.settings;
+        var text = config && config.text;
+        var hasValidText = text && [
+            'serviceSelectOfficePrompt',
+            'serviceSelectPrompt',
+            'otherServiceOption',
+            'otherServiceRequired',
+            'ccReasonRequired',
+            'loadError'
+        ].every(function (key) {
+            return typeof text[key] === 'string';
+        });
+
+        if (!hasValidCatalogs || !catalogs.otherOffice ||
+            !config.officeServiceCatalogs || typeof config.officeServiceCatalogs !== 'object' ||
+            !settings || typeof settings !== 'object' ||
+            typeof settings.autoAdvanceDurationMs !== 'number' ||
+            !isFinite(settings.autoAdvanceDurationMs) || settings.autoAdvanceDurationMs <= 0 ||
+            !hasValidText) {
+            onFailure('The survey configuration is missing valid catalogs, text, or settings.');
+            return;
+        }
+
+        surveyConfig = config;
+        onSuccess();
+    };
+    request.onerror = function () {
+        onFailure('A network error occurred while loading config/survey-config.json.');
+    };
+
+    request.open('GET', 'config/survey-config.json', true);
+    request.send();
+}
+
 if (!sectionChanger || !startSurveyButton) {
     console.error('The survey start button or content container could not be found.');
 } else {
@@ -980,7 +873,6 @@ if (!sectionChanger || !startSurveyButton) {
         startSurveyButton.classList.add('disabled');
         startSurveyButton.setAttribute('aria-disabled', 'true');
 
-        var request = new XMLHttpRequest();
         var failureHandled = false;
 
         function resetStartButton() {
@@ -999,25 +891,34 @@ if (!sectionChanger || !startSurveyButton) {
             showLoadError(message);
         }
 
-        request.onreadystatechange = function () {
-            if (request.readyState !== XMLHttpRequest.DONE) {
-                return;
-            }
+        function loadBasicInfo() {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (request.readyState !== XMLHttpRequest.DONE) {
+                    return;
+                }
 
-            if (request.status !== 200) {
-                handleLoadFailure('Unable to load basicinfo.html. HTTP status: ' + request.status);
-                return;
-            }
+                if (request.status !== 200) {
+                    handleLoadFailure('Unable to load basicinfo.html. HTTP status: ' + request.status);
+                    return;
+                }
 
-            sectionChanger.innerHTML = request.responseText;
-            activeSection = 'basicinfo';
-            initializeBasicInfo();
-        };
-        request.onerror = function () {
-            handleLoadFailure('A network error occurred while loading basicinfo.html.');
-        };
+                sectionChanger.innerHTML = request.responseText;
+                activeSection = 'basicinfo';
+                initializeBasicInfo();
+            };
+            request.onerror = function () {
+                handleLoadFailure('A network error occurred while loading basicinfo.html.');
+            };
 
-        request.open('GET', 'content/basicinfo.html', true);
-        request.send();
+            request.open('GET', 'content/basicinfo.html', true);
+            request.send();
+        }
+
+        if (surveyConfig) {
+            loadBasicInfo();
+        } else {
+            loadSurveyConfig(loadBasicInfo, handleLoadFailure);
+        }
     });
 }

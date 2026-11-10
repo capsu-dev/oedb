@@ -10,44 +10,59 @@
     <div id="cc-carousel" class="carousel slide" data-bs-interval="false" aria-label="Citizen's Charter questions">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <div class="py-3">
-                    <label class="form-label fw-semibold" for="cc1">
+                <fieldset class="border-0 p-0 m-0 py-3">
+                    <legend class="form-label fw-semibold">
                         CC1. Do you know about the Citizen's Charter (document of an agency's services and requirements)?
-                    </label>
-                    <select class="form-select form-select-lg" name="cc1" id="cc1" required>
-                        <option value="" selected disabled>Select an answer</option>
-                        <option value="aware-before">Yes, I was aware before my transaction with this office</option>
-                        <option value="aware-here">Yes, but I became aware only when I saw this office's CC</option>
-                        <option value="not-aware">No, I am not aware of the CC (skip CC2 and CC3)</option>
-                    </select>
-                </div>
+                    </legend>
+                    <div class="form-check p-3 ps-5 border rounded bg-white mb-2">
+                        <input class="form-check-input" type="radio" name="cc1" id="cc1-aware-before" value="aware-before" required>
+                        <label class="form-check-label" for="cc1-aware-before">Yes, I was aware before my transaction with this office</label>
+                    </div>
+                    <div class="form-check p-3 ps-5 border rounded bg-white mb-2">
+                        <input class="form-check-input" type="radio" name="cc1" id="cc1-aware-here" value="aware-here">
+                        <label class="form-check-label" for="cc1-aware-here">Yes, but I became aware only when I saw this office's CC</label>
+                    </div>
+                    <div class="form-check p-3 ps-5 border rounded bg-white">
+                        <input class="form-check-input" type="radio" name="cc1" id="cc1-not-aware" value="not-aware">
+                        <label class="form-check-label" for="cc1-not-aware">No, I am not aware of the CC (skip CC2 and CC3)</label>
+                    </div>
+                </fieldset>
             </div>
 
             <div class="carousel-item">
-                <div class="py-3">
-                    <label class="form-label fw-semibold" for="cc2">
+                <fieldset class="border-0 p-0 m-0 py-3">
+                    <legend class="form-label fw-semibold">
                         CC2. Did you see this office's Citizen's Charter?
-                    </label>
-                    <select class="form-select form-select-lg" name="cc2" id="cc2" required>
-                        <option value="" selected disabled>Select an answer</option>
-                        <option value="easy-to-find">Yes, the CC was easy to find</option>
-                        <option value="hard-to-find">Yes, but the CC was hard to find</option>
-                        <option value="not-seen">No, I did not see this office's CC (skip CC3)</option>
-                    </select>
-                </div>
+                    </legend>
+                    <div class="form-check p-3 ps-5 border rounded bg-white mb-2">
+                        <input class="form-check-input" type="radio" name="cc2" id="cc2-easy-to-find" value="easy-to-find" required>
+                        <label class="form-check-label" for="cc2-easy-to-find">Yes, the CC was easy to find</label>
+                    </div>
+                    <div class="form-check p-3 ps-5 border rounded bg-white mb-2">
+                        <input class="form-check-input" type="radio" name="cc2" id="cc2-hard-to-find" value="hard-to-find">
+                        <label class="form-check-label" for="cc2-hard-to-find">Yes, but the CC was hard to find</label>
+                    </div>
+                    <div class="form-check p-3 ps-5 border rounded bg-white">
+                        <input class="form-check-input" type="radio" name="cc2" id="cc2-not-seen" value="not-seen">
+                        <label class="form-check-label" for="cc2-not-seen">No, I did not see this office's CC (skip CC3)</label>
+                    </div>
+                </fieldset>
             </div>
 
             <div class="carousel-item">
-                <div class="py-3">
-                    <label class="form-label fw-semibold" for="cc3">
+                <fieldset class="border-0 p-0 m-0 py-3">
+                    <legend class="form-label fw-semibold">
                         CC3. Did you use the Citizen's Charter as a guide for the services you availed?
-                    </label>
-                    <select class="form-select form-select-lg" name="cc3" id="cc3" required>
-                        <option value="" selected disabled>Select an answer</option>
-                        <option value="used">Yes, I was able to use the CC</option>
-                        <option value="not-used">No, I was not able to use the CC</option>
-                    </select>
-                </div>
+                    </legend>
+                    <div class="form-check p-3 ps-5 border rounded bg-white mb-2">
+                        <input class="form-check-input" type="radio" name="cc3" id="cc3-used" value="used" required>
+                        <label class="form-check-label" for="cc3-used">Yes, I was able to use the CC</label>
+                    </div>
+                    <div class="form-check p-3 ps-5 border rounded bg-white">
+                        <input class="form-check-input" type="radio" name="cc3" id="cc3-not-used" value="not-used">
+                        <label class="form-check-label" for="cc3-not-used">No, I was not able to use the CC</label>
+                    </div>
+                </fieldset>
             </div>
         </div>
     </div>
@@ -71,6 +86,12 @@
         </div>
     </div>
 
+    <div id="cc-auto-advance" class="mb-3 d-none">
+        <span class="small text-secondary" role="status" aria-live="polite">Proceeding to the next question...</span>
+        <div class="progress mt-2" role="progressbar" aria-label="Time until the next question" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="progress-bar" id="cc-auto-advance-progress" style="width: 0%"></div>
+        </div>
+    </div>
     <div class="survey-navigation d-flex justify-content-between align-items-center gap-3 mt-auto">
         <button class="btn btn-outline-secondary" id="cc-previous" type="button">
             <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Back
@@ -79,8 +100,5 @@
         <button class="btn btn-primary" id="cc-next" type="button">
             Next <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
         </button>
-    </div>
-    <div class="alert alert-success mt-4 mb-0 d-none" id="cc-complete" role="status">
-        <i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i>Citizen's Charter questions complete.
     </div>
 </form>

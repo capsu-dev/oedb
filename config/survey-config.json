@@ -1,0 +1,282 @@
+{
+  "settings": {
+    "autoAdvanceDurationMs": 3000
+  },
+  "text": {
+    "serviceSelectOfficePrompt": "Select a department or office first",
+    "serviceSelectPrompt": "Select a service",
+    "otherServiceOption": "Others (please specify)",
+    "otherServiceRequired": "Please describe the service you received.",
+    "ccReasonRequired": "Please tell us why you were unable to use the Citizen Charter.",
+    "loadError": "The survey could not be loaded. Please try again."
+  },
+  "serviceCatalogs": {
+    "executive": [
+      "Request information or assistance from the office",
+      "Submit documents for review or endorsement",
+      "Request coordination or approval"
+    ],
+    "academic": [
+      "Request academic information or assistance",
+      "Submit academic documents for review",
+      "Request instructional or program support"
+    ],
+    "studentRecords": [
+      "Request for Transcript of Records",
+      "Request for Certificate of Good Moral Character",
+      "Request for Certificate of Enrollment"
+    ],
+    "studentAffairs": [
+      "Request student support or counseling",
+      "Request student organization assistance",
+      "Request information about student programs or activities"
+    ],
+    "library": [
+      "Borrow or renew library materials",
+      "Request library research assistance",
+      "Request library access or account assistance"
+    ],
+    "quality": [
+      "Request quality assurance or accreditation information",
+      "Submit documents for quality review",
+      "Request quality management assistance"
+    ],
+    "publication": [
+      "Request publication or editorial assistance",
+      "Request instructional material development support",
+      "Submit creative or instructional work for review"
+    ],
+    "administration": [
+      "Request administrative or operational assistance",
+      "Submit documents for office processing",
+      "Request information about university procedures"
+    ],
+    "humanResource": [
+      "Request personnel or employment records",
+      "Request human resource or leave assistance",
+      "Request information about recruitment or employee benefits"
+    ],
+    "budget": [
+      "Request budget allocation or availability information",
+      "Submit budget documents for review",
+      "Request budget processing assistance"
+    ],
+    "accounting": [
+      "Request accounting or financial document processing",
+      "Submit documents for accounting review",
+      "Request information about payment or liquidation requirements"
+    ],
+    "cashier": [
+      "Pay university fees or charges",
+      "Request an official receipt or payment record",
+      "Request assistance with refunds or payment concerns"
+    ],
+    "records": [
+      "Request a copy of an office record or document",
+      "Submit documents for receiving or records processing",
+      "Request records verification or certification"
+    ],
+    "facilities": [
+      "Request repair or maintenance of university facilities",
+      "Request facility or equipment assistance",
+      "Request housekeeping or utility support"
+    ],
+    "property": [
+      "Request supplies or property items",
+      "Submit property accountability or inventory documents",
+      "Request property or equipment assistance"
+    ],
+    "procurement": [
+      "Submit a procurement request",
+      "Request procurement or bidding information",
+      "Request supplier or procurement process assistance"
+    ],
+    "bidsAwards": [
+      "Request bidding or procurement documents",
+      "Submit bidding requirements",
+      "Request information about a procurement activity"
+    ],
+    "research": [
+      "Request research program or project assistance",
+      "Submit a research proposal or report",
+      "Request research funding or coordination information"
+    ],
+    "extension": [
+      "Request extension or community program assistance",
+      "Request community training or technical support",
+      "Propose or coordinate an extension activity"
+    ],
+    "intellectualProperty": [
+      "Request intellectual property or technology transfer assistance",
+      "Submit an invention or creative work for evaluation",
+      "Request information about intellectual property protection"
+    ],
+    "researchCenter": [
+      "Request research or laboratory assistance",
+      "Request technical information or testing support",
+      "Propose or coordinate a research activity"
+    ],
+    "externalAffairs": [
+      "Request partnership or institutional linkages assistance",
+      "Coordinate an international or national activity",
+      "Request information about external affairs programs"
+    ],
+    "alumni": [
+      "Request alumni records or verification",
+      "Coordinate an alumni or community activity",
+      "Request alumni or community affairs assistance"
+    ],
+    "digitalization": [
+      "Request digital service or online system assistance",
+      "Request help with a digitalization project",
+      "Report an issue with a university digital service"
+    ],
+    "it": [
+      "Request computer, network, or account support",
+      "Request information system access or assistance",
+      "Report an information technology issue"
+    ],
+    "planning": [
+      "Request university planning or development information",
+      "Submit planning or monitoring documents",
+      "Request institutional data or planning assistance"
+    ],
+    "information": [
+      "Request university information or materials",
+      "Request assistance with a public information matter",
+      "Submit information or materials for publication"
+    ],
+    "genderDevelopment": [
+      "Request gender and development program assistance",
+      "Request information about GAD activities or training",
+      "Request referral or support related to gender concerns"
+    ],
+    "disasterRisk": [
+      "Request disaster preparedness or safety information",
+      "Request risk reduction or emergency coordination",
+      "Request disaster preparedness training or assistance"
+    ],
+    "climate": [
+      "Request climate change or environmental information",
+      "Coordinate an environmental or climate activity",
+      "Request climate change program assistance"
+    ],
+    "nstp": [
+      "Request NSTP enrollment or program information",
+      "Request community immersion or deployment assistance",
+      "Submit NSTP documents or requirements"
+    ],
+    "sports": [
+      "Request sports facility or equipment assistance",
+      "Register or request information about sports activities",
+      "Coordinate a sports event or program"
+    ],
+    "culture": [
+      "Request cultural program or event assistance",
+      "Participate in or coordinate a cultural activity",
+      "Request information about university cultural services"
+    ],
+    "grievance": [
+      "File or follow up a grievance or complaint",
+      "Request assistance with complaint procedures",
+      "Request information about grievance resolution"
+    ],
+    "business": [
+      "Request university business or commercial service information",
+      "Submit a business or concession proposal",
+      "Request assistance with a university business transaction"
+    ],
+    "project": [
+      "Request project coordination or implementation assistance",
+      "Submit project documents for review",
+      "Request information about a university project"
+    ],
+    "ecotourism": [
+      "Request eco-tourism or landholding information",
+      "Request access or assistance for a university site",
+      "Coordinate an eco-tourism or land management activity"
+    ],
+    "dataProtection": [
+      "Request privacy or personal data assistance",
+      "Submit a data privacy concern or request",
+      "Request information about personal data handling"
+    ],
+    "qualityManagement": [
+      "Request quality management system assistance",
+      "Submit documents for quality management review",
+      "Request information about quality procedures"
+    ],
+    "campus": [
+      "Request for Transcript of Records",
+      "Request for Certificate of Good Moral Character",
+      "Request for Certificate of Enrollment",
+      "Request admission or registration assistance"
+    ],
+    "otherOffice": [
+      "Request information or assistance from the office",
+      "Submit documents for office processing",
+      "Request a record or document from the office"
+    ]
+  },
+  "officeServiceCatalogs": {
+    "office-of-the-president": "executive",
+    "board-secretary": "executive",
+    "internal-audit": "administration",
+    "legal-office": "administration",
+    "vp-academic-affairs": "academic",
+    "instruction": "academic",
+    "student-affairs": "studentAffairs",
+    "library-services": "library",
+    "quality-assurance": "quality",
+    "publication": "publication",
+    "vp-administration-finance": "administration",
+    "human-resource": "humanResource",
+    "budget": "budget",
+    "accounting": "accounting",
+    "cashier": "cashier",
+    "records": "records",
+    "general-services": "facilities",
+    "supply-property": "property",
+    "procurement": "procurement",
+    "bids-awards": "bidsAwards",
+    "vp-research-extension": "research",
+    "research-office": "research",
+    "extension-office": "extension",
+    "ip-management": "intellectualProperty",
+    "food-industrial-technology": "researchCenter",
+    "fisheries-aquamarine": "researchCenter",
+    "crop-science": "researchCenter",
+    "social-science": "researchCenter",
+    "livestock": "researchCenter",
+    "vp-external-affairs": "externalAffairs",
+    "international-national-affairs": "externalAffairs",
+    "alumni-community": "alumni",
+    "digitalization": "digitalization",
+    "mis": "it",
+    "planning": "planning",
+    "information-unit": "information",
+    "gender-development": "genderDevelopment",
+    "disaster-risk-reduction": "disasterRisk",
+    "climate-change": "climate",
+    "nstp": "nstp",
+    "sports-services": "sports",
+    "cultural-services": "culture",
+    "grievance-complaint": "grievance",
+    "university-business": "business",
+    "project-management": "project",
+    "eco-tourism": "ecotourism",
+    "data-protection": "dataProtection",
+    "quality-management": "qualityManagement",
+    "main-campus": "campus",
+    "pontevedra-campus": "campus",
+    "burias-campus": "campus",
+    "dayao-campus": "campus",
+    "pilar-campus": "campus",
+    "mambusao-campus": "campus",
+    "dumarao-campus": "campus",
+    "sigma-campus": "campus",
+    "tapaz-campus": "campus",
+    "sapian-campus": "campus",
+    "other": "otherOffice"
+  }
+}

@@ -1,7 +1,7 @@
 <form id="basic-info-form" class="d-flex flex-column flex-grow-1" novalidate>
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
         <div>
-            <p class="text-uppercase text-secondary small fw-semibold mb-1" id="basic-info-step-label">Step 1 of 6</p>
+            <p class="text-uppercase text-secondary small fw-semibold mb-1" id="basic-info-step-label">Step 1 of 2</p>
             <h1 class="h3 fw-bold mb-0">Let's get to know you.</h1>
         </div>
         
@@ -11,34 +11,28 @@
     <div id="basic-info-carousel" class="carousel slide" data-bs-interval="false" aria-label="Basic information">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <div class="age-body py-3">
-                    <label class="form-label fw-semibold" for="age">What is your name? (optional)</label>
-                    <input class="form-control form-control-lg" type="text" name="age" id="age" placeholder="Enter your name">
-                </div>
-            </div>
+                <div class="row g-3">
+                    <div class="col-12 col-md-6 age-body py-3">
+                    <label class="form-label fw-semibold" for="respondent-name">What is your name? (optional)</label>
+                    <input class="form-control form-control-lg" type="text" name="respondentName" id="respondent-name" placeholder="Enter your name">
+                    </div>
 
-
-            <div class="carousel-item">
-                <div class="age-body py-3">
+                    <div class="col-12 col-md-6 age-body py-3">
                     <label class="form-label fw-semibold" for="age">How old are you?</label>
                     <input class="form-control form-control-lg" type="number" name="age" id="age" min="1" max="100" placeholder="Enter your age" required>
-                </div>
-            </div>
+                    </div>
 
-            <div class="carousel-item">
-                <div class="sex-body py-3">
+                    <div class="col-12 col-md-6 sex-body py-3">
                     <label class="form-label fw-semibold" for="sex">What is your sex?</label>
                     <select class="form-select form-select-lg" name="sex" id="sex" required>
                         <option value="" selected disabled>Select an option</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
-                        <option value="female">Others</option>
+                        <option value="other">Others</option>
                     </select>
-                </div>
-            </div>
+                    </div>
 
-            <div class="carousel-item">
-                <div class="region-body py-3">
+                    <div class="col-12 col-md-6 region-body py-3">
                     <label class="form-label fw-semibold" for="region">Which municipality or city are you from?</label>
                     <select class="form-select form-select-lg" name="municipality" id="municipality" required>
                         <option value="" selected disabled>Select a municipality or city</option>
@@ -60,11 +54,13 @@
                         <option value="sigma">Sigma</option>
                         <option value="tapaz">Tapaz</option>
                     </select>
+                    </div>
                 </div>
             </div>
 
             <div class="carousel-item">
-                <div class="agency-body py-3">
+                <div class="row g-3">
+                    <div class="col-12 agency-body py-3">
                     <label class="form-label fw-semibold" for="agency">Which agency did you visit?</label>
                     <select class="form-select form-select-lg" name="agency" id="agency" required>
                         <option value="" selected disabled>Select a department or office</option>
@@ -150,20 +146,16 @@
 
                         <option value="other">Others</option>
                     </select>
-                </div>
-            </div>
+                    </div>
 
-            <div class="carousel-item">
-                <div class="service-body py-3">
+                    <div class="col-12 col-md-6 service-body py-3">
                     <label class="form-label fw-semibold" for="service">Which service did you avail?</label>
                     <select class="form-select form-select-lg" name="service" id="service" required>
                         <option value="" selected disabled>Select a department or office first</option>
                     </select>
-                </div>
-            </div>
+                    </div>
 
-            <div class="carousel-item">
-                <div class="customer-type-body py-3">
+                    <div class="col-12 col-md-6 customer-type-body py-3">
                     <label class="form-label fw-semibold" for="customer-type">What is your customer type?</label>
                     <select class="form-select form-select-lg" name="customerType" id="customer-type" required>
                         <option value="" selected disabled>Select a customer type</option>
@@ -171,6 +163,7 @@
                         <option value="1">Business</option>
                         <option value="2">Government</option>
                     </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -200,7 +193,7 @@
         <button class="btn btn-outline-secondary" id="basic-info-previous" type="button" disabled>
             <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Back
         </button>
-        <span class="small text-secondary text-nowrap" id="basic-info-progress" aria-live="polite">1 of 6</span>
+        <span class="small text-secondary text-nowrap" id="basic-info-progress" aria-live="polite">1 of 2</span>
         <button class="btn btn-primary" id="basic-info-next" type="button">
             Next <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
         </button>
