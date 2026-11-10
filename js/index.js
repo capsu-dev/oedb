@@ -7,6 +7,12 @@ var activeSection = null;
 var sectionHistory = [];
 var forwardSections = [];
 var surveyConfig = null;
+var responseSectionNames = {
+    basicinfo: 'basicInformation',
+    cc: 'citizensCharter',
+    sqd: 'serviceQuality',
+    remarks: 'remarks'
+};
 
 function animateSection(direction) {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !sectionChanger.animate) {
@@ -46,6 +52,18 @@ function restoreControlValues(values) {
             control.checked = values[index].checked;
         }
     });
+}
+
+function captureSurveySection(stage) {
+    var sectionName = responseSectionNames[stage];
+    var form = sectionChanger.querySelector('form');
+
+    if (!sectionName || !form) {
+        console.error('Cannot capture survey data for section: ' + stage);
+        return;
+    }
+
+    SurveyResponses.capture(sectionName, form);
 }
 
 function startQuestionAdvanceTimer(indicator, progressBar, onComplete) {
@@ -95,6 +113,7 @@ function initializeSection(stage) {
 
 function showSection(html, stage, direction) {
     if (activeSection !== null) {
+        captureSurveySection(activeSection);
         var currentNextButton = sectionChanger.querySelector('#basic-info-next, #cc-next, #sqd-next');
         if (currentNextButton) {
             currentNextButton.disabled = false;
@@ -128,6 +147,7 @@ function showSection(html, stage, direction) {
 
 function navigateToPreviousSection() {
     if (activeSection !== null) {
+        captureSurveySection(activeSection);
         forwardSections.push({
             stage: activeSection,
             html: sectionChanger.innerHTML,
@@ -780,6 +800,11 @@ function initializeRemarks() {
 
     form.addEventListener('submit', function (event) {
         event.preventDefault();
+        SurveyResponses.capture('remarks', form);
+        var response = SurveyResponses.getData();
+        document.dispatchEvent(new CustomEvent('survey:submit', {
+            detail: response
+        }));
         carousel.next();
     });
 
@@ -869,6 +894,7 @@ if (!sectionChanger || !startSurveyButton) {
             return;
         }
 
+        SurveyResponses.reset();
         isLoading = true;
         startSurveyButton.classList.add('disabled');
         startSurveyButton.setAttribute('aria-disabled', 'true');
